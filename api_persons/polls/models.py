@@ -11,6 +11,7 @@ class Language(models.Model):
 
 class Level(models.Model):
     name = models.CharField(max_length=30)
+
     # level = models.ForeignKey(Course, related_name='levels', )
 
     def __str__(self):
@@ -28,3 +29,15 @@ class Course(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class People(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField(max_length=254, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    courses = models.ForeignKey(Course, related_name='peoples', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.first_name
