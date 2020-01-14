@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse
-import requests
 from .models import People, Level, Language, Course
+from rest_framework import viewsets
+from .serializers import LevelSerializer, LanguageSerializer, CourseSerializer, PeopleSerializer
 
 
 def home(request):
@@ -20,7 +21,19 @@ def people_new(request):
     #         email=email
     #     )
     # return HttpResponse('New person added...')
-    return HttpResponse(People.objects.all())
+    if request.method == 'POST':
+        code = request.POST['code']
+        name = request.POST['name']
+
+        language = Language.objects.create(
+            code=code,
+            name=name
+        )
+
+        return HttpResponse('Eureka!')
+
+    peoples = get_list_or_404(People)
+    return HttpResponse(peoples)
 
 
 def _url(path):
@@ -40,5 +53,25 @@ def levels(request):
 
 
 def people_find(request, person_id):
-    people = get_object_or_404(People, pk=person_id)
-    return HttpResponse(people)
+    person = get_object_or_404(People, pk=person_id)
+    return HttpResponse(person)
+
+
+class LevelViewSet(viewsets.ModelViewSet):
+    queryset = Level.objects.all().order_by('id')
+    serializer_class = LevelSerializer
+
+
+class LanguageViewSet(viewsets.ModelViewSet):
+    queryset = Language.objects.all().order_by('code')
+    serializer_class = LanguageSerializer
+
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all().order_by('name')
+    serializer_class = CourseSerializer
+
+
+class PeopleViewSet(viewsets.ModelViewSet):
+    queryset = People.objects.all()
+    serializer_class = PeopleSerializer

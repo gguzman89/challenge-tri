@@ -1,12 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 from . import views
 
-urlpatterns = [
-    path('', views.home, name='home'),
-    path('courses/', views.courses, name='courses'),
-    path('languages/', views.languages, name='languages'),
-    path('levels/', views.levels, name='levels'),
-    path('peoples/', views.people_new, name='people_new'),
-    path('peoples/<int:person_id>/', views.people_find, name='people_find'),
+router = routers.DefaultRouter()
+router.register(r'levels', views.LevelViewSet)
+router.register(r'languages', views.LanguageViewSet)
+router.register(r'courses', views.CourseViewSet)
+router.register(r'peoples', views.PeopleViewSet)
 
+urlpatterns = [
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

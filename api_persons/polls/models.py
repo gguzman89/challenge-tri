@@ -12,8 +12,6 @@ class Language(models.Model):
 class Level(models.Model):
     name = models.CharField(max_length=30)
 
-    # level = models.ForeignKey(Course, related_name='levels', )
-
     def __str__(self):
         return self.name
 
@@ -37,7 +35,7 @@ class People(models.Model):
     email = models.EmailField(max_length=254, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
-    courses = models.ForeignKey(Course, related_name='peoples', on_delete=models.CASCADE, null=True)
+    courses = models.ManyToManyField(Course, related_name='peoples')
 
     def __str__(self):
         return self.first_name
